@@ -1,0 +1,7 @@
+<hibernate-mapping>
+    <class name="ru.job4j.models.User" table="users">
+        <id name="id" column="id"/>
+        <property name="name" column="name"/>
+        <property name="expired" column="expired"/>
+    </class>
+</hibernate-mapping>
