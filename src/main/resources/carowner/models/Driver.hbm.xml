@@ -1,0 +1,13 @@
+<hibernate-mapping xmlns="http://www.hibernate.org/xsd/hibernate-mapping">
+    <class name="carowner.models.Driver" table="drivers">
+        <id name="id" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="name" column="name"/>
+        <property name="phone" column="phone"/>
+        <set name="cars" table="history_owner" inverse="true" lazy="true" fetch="select" cascade="save-update, delete">
+            <key column="driver_id" not-null="true"/>
+            <many-to-many class="carowner.models.Car" column="car_id"/>
+        </set>
+    </class>
+</hibernate-mapping>
