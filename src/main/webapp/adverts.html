@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UserAdverts</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+</head>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous">
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        showUsersAdverts();
+    });
+
+    function showUsersAdverts() {
+        $.ajax({
+            type: 'POST',
+            url: './adverts',
+            data: {id : getUserId()},
+            datatype: 'json',
+            success: function (data) {
+                fillTable(data);
+            }
+        });
+    }
+
+    function fillTable(data) {
+        let adverts = data;
+        for (let i = 0; i < adverts.length; i++) {
+            let id = adverts[i].id;
+            let carAdd = adverts[i]['car'].mark.name + '\n' + adverts[i]['car'].model.name;
+            let price = adverts[i]['price'];
+            let photo = adverts[i]['imageName'];
+            let status = adverts[i]['status'];
+            if (status === false) {
+                status = "В продаже";
+            } else {
+                status = "Продано";
+            }
+            $('#adverts tr:last').after(
+                '<tr><td id="car">' + carAdd + '</td>'
+                + '<td id="price">' + price + '</td>'
+                + '<td id="photo"><img src="./download?name=' + photo + '" width="250px" height="200px"></td>'
+                + '<td id="status">' + status + "</br></br>" + '<button type="button" class="btn btn-dark" id="' + id + '">Change status</button></td></tr>'
+            );
+        }
+    }
+
+    $(document).on('click', ':button', function () {
+        let id = $(this).attr('id');
+        if (id !== 'add') {
+            $.ajax({
+                type: 'POST',
+                url: './status',
+                data: {id : id, status : true},
+                datatype: 'json',
+                success: function (data) {
+                    location.reload();
+                }
+            });
+        }
+    });
+
+    function getUserId() {
+        return new URLSearchParams(window.location.search).get("user");
+    }
+
+    function redirectAddAdvert() {
+        setTimeout(function () {
+            window.location.href = "/buyer/newadvert.html?user=" + getUserId();
+        }, 1000);
+    }
+
+    function returnStartPage() {
+        setTimeout(function () {
+            window.location.href = "/buyer/index.html";
+        }, 1000);
+    }
+</script>
+<body>
+<h3 align="middle">List our adverts</h3>
+<div class="container">
+    <table class="table table-striped, table-bordered" id="adverts">
+        <thead class="thead-dark">
+        <tr align="middle">
+            <th width="25%" scope="col">Car</th>
+            <th width="15%" scope="col">Price</th>
+            <th width="40%" scope="col">Photo</th>
+            <th width="20%" scope="col">Status</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div class="form-group row">
+    <label class="col-form-label col-sm-1" style="font-weight: 900"></label>
+    <div class="col">
+        <button id="add" type="button" class="btn btn-dark" onclick="redirectAddAdvert()">Add new advert</button>
+    </div>
+    <div class="col-sm-9">
+        <button id="return" type="button" class="btn btn-dark" onclick="returnStartPage()">Return start page</button>
+    </div>
+</div>
+</body>
+</html>

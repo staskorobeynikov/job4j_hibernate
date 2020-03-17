@@ -2,160 +2,153 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TODOList</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>ShowAllAdverts</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
 </head>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script>
-    function addItem() {
-        if (validate()) {
-            $.ajax({
-                    method: 'POST',
-                    url: './add',
-                    data: {desc : $("#description").val()},
-                    success: function ($data) {
-                        console.log($data);
-                    }
-                }
-            );
-        }
-        location.reload();
-    }
-    function validate() {
-        let result = true;
-        let answer = '';
-        let elements = [$("#description")];
-        for (let i = 0; i < elements.length; i++) {
-            if (elements[i].val() === '') {
-                answer += elements[i].attr("placeholder") + "\n";
-                result = false;
-            }
-        }
-        if (!result) {
-            alert(answer);
-        }
-        return result;
-    }
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous">
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous">
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+    .account {
+        position: fixed;
+        right: 5px;
+        top: 5px;
+    }
+</style>
 <script>
     $(document).ready(function () {
         showAll();
-    })
-</script>
-<script>
-    function filterItems() {
-        let check = $("#filter").prop("checked");
-        if (check) {
-            showAll();
-        } else {
-            showFilterItems();
-        }
-    }
+    });
+
     function showAll() {
         $.ajax({
             type: 'POST',
-            url: './show',
+            url: './cars',
             dataType: 'json',
             success: function ($data) {
-                addRowsTable($data);
+                addRows($data)
             }
         });
     }
 
-    function showFilterItems() {
-        $.ajax({
-            type: 'POST',
-            url: './filter',
-            dataType: 'json',
-            success: function ($data) {
-                addRowsTable($data);
+    function addRows(data) {
+        let adverts = data;
+        for (let i = 0; i < adverts.length; i++) {
+            let id = adverts[i].id;
+            let carAdd = adverts[i]['car'].mark.name + '\n' + adverts[i]['car'].model.name;
+            let price = adverts[i]['price'];
+            let seller = adverts[i]['owner'].name + '\n' + adverts[i]['owner'].phone;
+            let photo = adverts[i]['imageName'];
+            let dateAdd = adverts[i]['createdDate'];
+            let status = adverts[i]['status'];
+            if (status === false) {
+                status = "В продаже";
+            } else {
+                status = "Продано";
             }
-        });
-    }
-
-    function addRowsTable(data) {
-        let items = data;
-        console.log(items);
-        deleteRows();
-        for (let i = 0; i < items.length; i++) {
-            let id = items[i]['id'];
-            let desc = items[i]['desc'];
-            let created = items[i]['created'];
-            let done = items[i]['done'];
-            $("#table tr:last").after(
-                '<tr><td id="id">' + id + '</td>'
-                + '<td>' + desc + '</td>'
-                + '<td>' + created + '</td>'
-                + '<td align="middle"><input type="checkbox" id="' + id + '" name="task" value="task"></td></tr>'
+            $('#allAdverts tr:last').after(
+              '<tr><td id="car">' + carAdd + "</br></br>"
+                + '<button id="' + id + '" type="button" class="btn btn-primary" data-toggle="modal" data-target="#carInfo">'
+                + 'Details</button></td>'
+                + '<td id="price">' + price + '</td>'
+                + '<td id="seller">' + seller + '</td>'
+                + '<td id="photo"><img src="./download?name=' + photo + '" width="200px" height="150px"></td>'
+                + '<td id="date_add">' + dateAdd + '</td>'
+                + '<td id="status">' + status + '</td></tr>'
             );
-        }
-    }
-
-    function deleteRows() {
-        let all_td = document.getElementsByTagName("td");
-        for(let i = 0; i < all_td.length; i++){
-            all_td[i].innerHTML="";
         }
     }
 </script>
 <script>
-    $(document).on('change', ':checkbox' ,function () {
-        let id = $(this).attr("id");
-        console.log(id);
-        if (id !== "filter") {
+    $(document).on('click', ':button', function () {
+        let id = $(this).attr('id');
+        if (id !== 'add') {
             $.ajax({
-                type: "POST",
-                url: './update',
-                data: {id : $(this).attr("id"), done : $(this).prop("checked")},
+                type: 'POST',
+                url: './info',
+                data: {id : id},
+                dataType: 'json',
                 success: function (data) {
-                    console.log(data);
+                    addInfo(data);
                 }
             });
-            location.reload();
         }
     });
+
+    function addInfo(data) {
+        let car = data;
+        document.getElementById("infoLabel").innerHTML = car.mark.name + "\n" + car.model.name;
+        let result = "<tr><td>Mile age</td><td>" + car.mileAge + " km</td></tr>";
+        result += "<tr><td>Date created</td><td>" + car.created + "</td></tr>";
+        result += "<tr><td>Gear box</td><td>" + car.transmission.gearBox + "</td></tr>";
+        result += "<tr><td>Gear type</td><td>" + car.transmission.gearType + "</td></tr>";
+        result += "<tr><td>Car body type</td><td>" + car.carBody.type + "</td></tr>";
+        result += "<tr><td>Car body color</td><td>" + car.carBody.color + "</td></tr>";
+        result += "<tr><td>Count door</td><td>" + car.carBody.countDoor + "</td></tr>";
+        result += "<tr><td>Engine volume</td><td>" + car.engine.volume + " l</td></tr>";
+        result += "<tr><td>Engine power</td><td>" + car.engine.power + " hp</td></tr>";
+        result += "<tr><td>Engine type</td><td>" + car.engine.type + "</td></tr>";
+        document.getElementById("info").innerHTML = result;
+    }
+</script>
+<script>
+    function enter() {
+        window.location.href = "/buyer/login.html";
+    }
 </script>
 <body>
-<div>
-    <form class="form-horizontal">
-        <h2 class="col-sm-offset-4">TODO list</h2>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="description">Description</label>
-            <div class="col-sm-5">
-                <textarea class="form-control" rows="5" id="description" placeholder="Enter description..."></textarea>
-            </div>
-            <button type="button" class="btn btn-default" onclick="addItem()">Add item</button>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="filter">Show all tasks</label>
-            <div class="col-sm-5">
-                <input type="checkbox" id="filter" name="filter" value="filter" checked onchange="filterItems()">
-            </div>
-        </div>
-    </form>
+<div class="account">
+    <button id="add" type="button" class="btn btn-outline-dark" onclick="enter()">Add</button>
 </div>
-<div class="col-sm-offset-2">
-    <table class="table-bordered" id="table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Description</th>
-            <th>Created</th>
-            <th>Done</th>
+<div class="container">
+    <table class="table table-striped, table-bordered" id="allAdverts">
+        <thead class="thead-dark">
+        <tr align="middle">
+            <th scope="col">Car</th>
+            <th scope="col">Price</th>
+            <th scope="col">Seller</th>
+            <th scope="col">Photo</th>
+            <th scope="col">Date add</th>
+            <th scope="col">Status</th>
         </tr>
         </thead>
     </table>
+</div>
+<div class="modal fade" id="carInfo" tabindex="-1" role="dialog" aria-labelledby="infoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped, table-bordered">
+                    <tbody id="info">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

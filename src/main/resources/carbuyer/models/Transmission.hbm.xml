@@ -1,0 +1,9 @@
+<hibernate-mapping xmlns="http://www.hibernate.org/xsd/hibernate-mapping">
+    <class name="carbuyer.models.Transmission" table="transmission">
+        <id name="id" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="gearBox" column="gear_box"/>
+        <property name="gearType" column="gear_type"/>
+    </class>
+</hibernate-mapping>

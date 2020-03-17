@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TODOList</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    function addItem() {
+        if (validate()) {
+            $.ajax({
+                    method: 'POST',
+                    url: './add',
+                    data: {desc : $("#description").val()},
+                    success: function ($data) {
+                        console.log($data);
+                    }
+                }
+            );
+        }
+        location.reload();
+    }
+    function validate() {
+        let result = true;
+        let answer = '';
+        let elements = [$("#description")];
+        for (let i = 0; i < elements.length; i++) {
+            if (elements[i].val() === '') {
+                answer += elements[i].attr("placeholder") + "\n";
+                result = false;
+            }
+        }
+        if (!result) {
+            alert(answer);
+        }
+        return result;
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        showAll();
+    })
+</script>
+<script>
+    function filterItems() {
+        let check = $("#filter").prop("checked");
+        if (check) {
+            showAll();
+        } else {
+            showFilterItems();
+        }
+    }
+    function showAll() {
+        $.ajax({
+            type: 'POST',
+            url: './show',
+            dataType: 'json',
+            success: function ($data) {
+                addRowsTable($data);
+            }
+        });
+    }
+
+    function showFilterItems() {
+        $.ajax({
+            type: 'POST',
+            url: './filter',
+            dataType: 'json',
+            success: function ($data) {
+                addRowsTable($data);
+            }
+        });
+    }
+
+    function addRowsTable(data) {
+        let items = data;
+        console.log(items);
+        deleteRows();
+        for (let i = 0; i < items.length; i++) {
+            let id = items[i]['id'];
+            let desc = items[i]['desc'];
+            let created = items[i]['created'];
+            let done = items[i]['done'];
+            $("#table tr:last").after(
+                '<tr><td id="id">' + id + '</td>'
+                + '<td>' + desc + '</td>'
+                + '<td>' + created + '</td>'
+                + '<td align="middle"><input type="checkbox" id="' + id + '" name="task" value="task"></td></tr>'
+            );
+        }
+    }
+
+    function deleteRows() {
+        let all_td = document.getElementsByTagName("td");
+        for(let i = 0; i < all_td.length; i++){
+            all_td[i].innerHTML="";
+        }
+    }
+</script>
+<script>
+    $(document).on('change', ':checkbox' ,function () {
+        let id = $(this).attr("id");
+        console.log(id);
+        if (id !== "filter") {
+            $.ajax({
+                type: "POST",
+                url: './update',
+                data: {id : $(this).attr("id"), done : $(this).prop("checked")},
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+            location.reload();
+        }
+    });
+</script>
+<body>
+<div>
+    <form class="form-horizontal">
+        <h2 class="col-sm-offset-4">TODO list</h2>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="description">Description</label>
+            <div class="col-sm-5">
+                <textarea class="form-control" rows="5" id="description" placeholder="Enter description..."></textarea>
+            </div>
+            <button type="button" class="btn btn-default" onclick="addItem()">Add item</button>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="filter">Show all tasks</label>
+            <div class="col-sm-5">
+                <input type="checkbox" id="filter" name="filter" value="filter" checked onchange="filterItems()">
+            </div>
+        </div>
+    </form>
+</div>
+<div class="col-sm-offset-2">
+    <table class="table-bordered" id="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Created</th>
+            <th>Done</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+</body>
+</html>

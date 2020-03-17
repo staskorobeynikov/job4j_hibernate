@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost/CarBuyerStore</property>
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.username">postgres</property>
+        <property name="connection.password">password</property>
+        <property name="dialect">org.hibernate.dialect.PostgreSQL94Dialect</property>
+
+        <mapping resource="carbuyer/models/Engine.hbm.xml"/>
+        <mapping resource="carbuyer/models/CarBody.hbm.xml"/>
+        <mapping resource="carbuyer/models/Transmission.hbm.xml"/>
+        <mapping resource="carbuyer/models/Account.hbm.xml"/>
+        <mapping resource="carbuyer/models/Car.hbm.xml"/>
+        <mapping resource="carbuyer/models/Mark.hbm.xml"/>
+        <mapping resource="carbuyer/models/Model.hbm.xml"/>
+        <mapping resource="carbuyer/models/User.hbm.xml"/>
+        <mapping resource="carbuyer/models/Advert.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>
