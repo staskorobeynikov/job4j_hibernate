@@ -42,9 +42,11 @@ public class AddNewAdvertServlet extends HttpServlet {
             for (FileItem item : items) {
                 if (!item.isFormField()) {
                     photo = this.getNamePhoto(item.getName());
-                    File file = new File(folder + File.separator + photo);
-                    try (FileOutputStream out = new FileOutputStream(file)) {
-                        out.write(item.getInputStream().readAllBytes());
+                    if (!photo.equals("")) {
+                        File file = new File(folder + File.separator + photo);
+                        try (FileOutputStream out = new FileOutputStream(file)) {
+                            out.write(item.getInputStream().readAllBytes());
+                        }
                     }
                 } else {
                     switch (item.getFieldName()) {

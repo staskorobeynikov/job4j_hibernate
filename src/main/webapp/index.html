@@ -26,8 +26,8 @@
 <style>
     .account {
         position: fixed;
-        right: 5px;
-        top: 5px;
+        right: 1px;
+        top: 1px;
     }
 </style>
 <script>
@@ -62,7 +62,7 @@
                 status = "Продано";
             }
             $('#allAdverts tr:last').after(
-              '<tr><td id="car">' + carAdd + "</br></br>"
+              '<tr class="rows"><td id="car">' + carAdd + "</br></br>"
                 + '<button id="' + id + '" type="button" class="btn btn-primary" data-toggle="modal" data-target="#carInfo">'
                 + 'Details</button></td>'
                 + '<td id="price">' + price + '</td>'
@@ -111,9 +111,93 @@
         window.location.href = "/buyer/login.html";
     }
 </script>
+<script>
+    $(document).on('change', ':checkbox', function () {
+        let id = $(this).attr("id");
+        console.log(id);
+        if (id !== "fPhoto") {
+            deleteRows();
+            let check = $(this).prop("checked");
+            if (check) {
+                $.ajax({
+                    type: 'POST',
+                    url: './lastday',
+                    dataType: 'json',
+                    success: function ($data) {
+                        addRows($data);
+                    }
+                });
+            } else {
+                location.reload();
+            }
+        } else {
+            deleteRows();
+            let check = $(this).prop("checked");
+            if (check) {
+                $.ajax({
+                   type: 'POST',
+                   url: './withphoto',
+                   dataType: 'json',
+                   success: function ($data) {
+                       addRows($data);
+                   }
+                });
+            } else {
+                location.reload();
+            }
+        }
+    });
+
+    function deleteRows() {
+        let rows = document.getElementsByClassName("rows");
+        console.log(rows.length);
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].innerHTML = "";
+        }
+    }
+</script>
+
 <body>
-<div class="account">
-    <button id="add" type="button" class="btn btn-outline-dark" onclick="enter()">Add</button>
+<div class="container">
+    <div class="form-inline">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" value="filter" name="filter" id="filter" onchange="">
+            <label class="form-check-label" for="filter" style="font-weight: 900">Show last day</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" value="fPhoto" name="fPhoto" id="fPhoto" onchange="">
+            <label class="form-check-label" for="fPhoto" style="font-weight: 900">Show with photo</label>
+        </div>
+        <label class="col-form-label col-sm-2" for="mark" style="font-weight: 900">Show cars mark</label>
+        <div class="col">
+            <select class="custom-select" id="mark" name="mark">
+                <option selected>Choose...</option>
+                <option value="Toyota">Toyota</option>
+                <option value="Mercedes">Mercedes</option>
+                <option value="Renault">Renault</option>
+                <option value="Kia">Kia</option>
+                <option value="Volvo">Volvo</option>
+            </select>
+        </div>
+        <script>
+            $(".custom-select").change(function () {
+                let selectModel = $(this).val();
+                deleteRows();
+                $.ajax({
+                    type: 'POST',
+                    url: './marks',
+                    data: {mark : selectModel},
+                    dataType: 'json',
+                    success: function ($data) {
+                        addRows($data);
+                    }
+                });
+            })
+        </script>
+    </div>
+    <div class="account">
+        <button id="add" type="button" class="btn btn-outline-dark" onclick="enter()">Add</button>
+    </div>
 </div>
 <div class="container">
     <table class="table table-striped, table-bordered" id="allAdverts">

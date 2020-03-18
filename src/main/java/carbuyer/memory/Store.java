@@ -16,6 +16,12 @@ public interface Store {
 
     List<Advert> getAdvertsUser(User user);
 
+    List<Advert> showLastDay();
+
+    List<Advert> showWithPhoto();
+
+    List<Advert> showWithSpecificMark(Mark mark);
+
     void updateStatus(Advert advert);
 
     void addNewAdvert(CarBody carBody, Engine engine, Transmission transmission,

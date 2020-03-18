@@ -11,6 +11,7 @@ import org.hibernate.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class DBStore implements Store {
 
@@ -106,6 +107,71 @@ public class DBStore implements Store {
             result = session.createQuery("FROM carbuyer.models.Advert WHERE owner_id = :id")
                     .setParameter("id", user.getId())
                     .list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            LOG.error(e.getMessage(), e);
+        } finally {
+            session.close();
+        }
+        return result;
+    }
+
+    @Override
+    public List<Advert> showLastDay() {
+        List<Advert> result = new ArrayList<>();
+        Session session = factory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            result = session.createQuery("FROM carbuyer.models.Advert WHERE "
+                    + "created_date BETWEEN current_date - 1 AND current_date + 1").list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            LOG.error(e.getMessage(), e);
+        } finally {
+            session.close();
+        }
+        return result;
+    }
+
+    @Override
+    public List<Advert> showWithPhoto() {
+        List<Advert> result = new ArrayList<>();
+        Session session = factory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            result = session.createQuery("FROM carbuyer.models.Advert WHERE image_name != ''").list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            LOG.error(e.getMessage(), e);
+        } finally {
+            session.close();
+        }
+        return result;
+    }
+
+    @Override
+    public List<Advert> showWithSpecificMark(Mark mark) {
+        List<Advert> result = new ArrayList<>();
+        Mark findMark = null;
+        Session session = factory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            Query markQuery = session.createQuery("FROM carbuyer.models.Mark WHERE name = :name");
+            markQuery.setParameter("name", mark.getName());
+            Optional<Mark> optional = markQuery.uniqueResultOptional();
+
+            if (optional.isPresent()) {
+                findMark = optional.get();
+            }
+
+            if (findMark != null) {
+                Query query = session.createQuery("FROM carbuyer.models.Advert as adv join fetch adv.car WHERE mark_id = :id");
+                query.setParameter("id", findMark.getId());
+                result = query.list();
+            }
             session.getTransaction().commit();
         } catch (Exception e) {
             transaction.rollback();

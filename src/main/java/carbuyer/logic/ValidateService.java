@@ -62,6 +62,21 @@ public class ValidateService implements Validate {
     }
 
     @Override
+    public List<Advert> showLastDay() {
+        return store.showLastDay();
+    }
+
+    @Override
+    public List<Advert> showWithPhoto() {
+        return store.showWithPhoto();
+    }
+
+    @Override
+    public List<Advert> showWithSpecificMark(Mark mark) {
+        return store.showWithSpecificMark(mark);
+    }
+
+    @Override
     public void updateStatus(Advert advert) {
         store.updateStatus(advert);
     }

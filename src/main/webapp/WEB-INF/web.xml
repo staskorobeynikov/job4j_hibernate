@@ -125,4 +125,34 @@
         <url-pattern>/info</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>ShowLastDayAdvertsServlet</servlet-name>
+        <servlet-class>carbuyer.servlets.ShowLastDayAdvertsServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ShowLastDayAdvertsServlet</servlet-name>
+        <url-pattern>/lastday</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ShowAdvertsWithPhotoServlet</servlet-name>
+        <servlet-class>carbuyer.servlets.ShowAdvertsWithPhotoServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ShowAdvertsWithPhotoServlet</servlet-name>
+        <url-pattern>/withphoto</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ShowAdvertsSpecificMarkServlet</servlet-name>
+        <servlet-class>carbuyer.servlets.ShowAdvertsSpecificMarkServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ShowAdvertsSpecificMarkServlet</servlet-name>
+        <url-pattern>/marks</url-pattern>
+    </servlet-mapping>
+
 </web-app>
