@@ -123,8 +123,8 @@ public class DBStore implements Store {
         Session session = factory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
-            result = session.createQuery("FROM carbuyer.models.Advert WHERE "
-                    + "created_date BETWEEN current_date - 1 AND current_date + 1").list();
+            result = session.createQuery("FROM carbuyer.models.Advert "
+                    + "WHERE extract(day from created_date) > extract(day from current_date) - 1").list();
             session.getTransaction().commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -155,21 +155,21 @@ public class DBStore implements Store {
     @Override
     public List<Advert> showWithSpecificMark(Mark mark) {
         List<Advert> result = new ArrayList<>();
-        Mark findMark = null;
+        int findId = 0;
         Session session = factory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
-            Query markQuery = session.createQuery("FROM carbuyer.models.Mark WHERE name = :name");
-            markQuery.setParameter("name", mark.getName());
-            Optional<Mark> optional = markQuery.uniqueResultOptional();
-
-            if (optional.isPresent()) {
-                findMark = optional.get();
+            List<Mark> list = session.createQuery("FROM carbuyer.models.Mark").list();
+            for (Mark mark1 : list) {
+                if (mark1.getName().equals(mark.getName())) {
+                    findId = mark1.getId();
+                    break;
+                }
             }
-
-            if (findMark != null) {
-                Query query = session.createQuery("FROM carbuyer.models.Advert as adv join fetch adv.car WHERE mark_id = :id");
-                query.setParameter("id", findMark.getId());
+            if (findId != 0) {
+                Query query = session.createQuery("FROM carbuyer.models.Advert as adv "
+                        + "join fetch adv.car WHERE mark_id = :id");
+                query.setParameter("id", findId);
                 result = query.list();
             }
             session.getTransaction().commit();
