@@ -1,6 +1,9 @@
 package carbuyer.memory;
 
 import carbuyer.models.*;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,10 +15,18 @@ import static org.junit.Assert.*;
 
 public class DBStoreTest {
 
-    private final Store store = DBStore.getInstance();
+    private SessionFactory factory;
+
+    private Session session;
+
+    private Store store;
 
     @Before
     public void init() {
+        factory = ConnectionRollback.create(HibernateFactory.FACTORY);
+        session = factory.openSession();
+        store = new DBStore(factory);
+
         CarBody body = new CarBody();
         body.setType("sedan");
         body.setColor("black");
@@ -58,37 +69,51 @@ public class DBStoreTest {
         User addUser = store.addUser(user, account);
         store.addNewAdvert(body, engine, transmission, mark, model, addUser, car, advert);
 
-        body.setType("hatchback");
-        body.setColor("yellow");
-        body.setCountDoor(5);
+        CarBody body1 = new CarBody();
+        body1.setType("hatchback");
+        body1.setColor("yellow");
+        body1.setCountDoor(5);
 
-        engine.setVolume(1.5);
-        engine.setPower(80);
-        engine.setType("diesel");
+        Engine engine1 = new Engine();
+        engine1.setVolume(1.5);
+        engine1.setPower(80);
+        engine1.setType("diesel");
 
-        transmission.setGearBox("mechanic");
-        transmission.setGearType("front");
+        Transmission transmission1 = new Transmission();
+        transmission1.setGearBox("mechanic");
+        transmission1.setGearType("front");
 
-        mark.setName("Renault");
+        Mark mark1 = new Mark();
+        mark1.setName("Renault");
 
-        model.setName("Sandero II");
+        Model model1 = new Model();
+        model1.setName("Sandero II");
 
-        car.setCreated(new Timestamp(1551398400000L));
-        car.setMileAge(10000);
+        Car car1 = new Car();
+        car1.setCreated(new Timestamp(1551398400000L));
+        car1.setMileAge(10000);
 
-        advert.setImageName("");
-        advert.setStatus(false);
-        advert.setPrice(3250000);
-        advert.setCreatedDate(new Timestamp(System.currentTimeMillis() - 500000));
+        Advert advert1 = new Advert();
+        advert1.setImageName("");
+        advert1.setStatus(false);
+        advert1.setPrice(3250000);
+        advert1.setCreatedDate(new Timestamp(System.currentTimeMillis() - 500000));
 
-        store.addNewAdvert(body, engine, transmission, mark, model, addUser, car, advert);
+        store.addNewAdvert(body1, engine1, transmission1, mark1, model1, addUser, car1, advert1);
+    }
+
+    @After
+    public void destroy() {
+        session.clear();
+        factory.close();
     }
 
     @Test
     public void whenFindAllAdvertsSizeListIsTwo() {
         List<Advert> list = store.findAll();
-
         assertThat(list.size(), is(2));
+        assertThat(list.get(1).getCar().getMark().getName(), is("Renault"));
+        assertThat(list.iterator().next().getPrice(), is(250000));
     }
 
     @Test
@@ -109,11 +134,13 @@ public class DBStoreTest {
 
     @Test
     public void whenGetAllAdvertsForUserThanListSizeIsTwoImageAndModelCarIsCorrect() {
+        int id = store.findAll().get(1).getOwner().getId();
         User user = new User();
-        user.setId(1);
+        user.setId(id);
 
         List<Advert> list = store.getAdvertsUser(user);
 
+        assertThat(list.size(), is(2));
         assertThat(list.iterator().next().getImageName(), is("image1.png"));
         assertThat(list.get(1).getCar().getModel().getName(), is("Sandero II"));
     }
@@ -131,6 +158,7 @@ public class DBStoreTest {
     public void whenGetAdvertsWithPhoto() {
         List<Advert> list = store.showWithPhoto();
 
+        assertThat(list.size(), is(1));
         assertThat(list.iterator().next().getOwner().getPhone(), is("+375295046003"));
         assertThat(list.get(0).getCar().getModel().getName(), is("Rio"));
     }
@@ -142,22 +170,23 @@ public class DBStoreTest {
 
         List<Advert> list = store.showWithSpecificMark(mark);
 
+        assertThat(list.size(), is(1));
         assertThat(list.get(0).getCar().getCarBody().getColor(), is("yellow"));
         assertThat(list.get(0).getCar().getCarBody().getType(), is("hatchback"));
     }
 
     @Test
     public void whenUpdateStatusFirstAdvertThanStatusIsTrue() {
+        int id = store.findAll().get(0).getId();
         Advert advert = new Advert();
-        advert.setId(1);
+        advert.setId(id);
         advert.setStatus(true);
 
         store.updateStatus(advert);
 
         List<Advert> list = store.findAll();
 
-        assertThat(list.iterator().next().isStatus(), is(true));
-        assertThat(list.iterator().next().getPrice(), is(250000));
-        assertThat(list.get(0).getCar().getEngine().getType(), is("petrol"));
+        assertThat(list.size(), is(2));
+
     }
 }

@@ -6,22 +6,22 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class DBStore implements Store {
 
-    private static final DBStore INSTANCE = new DBStore();
+    private static final DBStore INSTANCE = new DBStore(HibernateFactory.getFactory());
 
     private static final Logger LOG = LogManager.getLogger(DBStore.class.getName());
 
-    private final SessionFactory factory = new Configuration()
-            .configure("CarBuyer.cfg.xml")
-            .buildSessionFactory();
+    private final SessionFactory factory;
+
+    public DBStore(SessionFactory factory) {
+        this.factory = factory;
+    }
 
     public static DBStore getInstance() {
         return INSTANCE;
@@ -37,7 +37,7 @@ public class DBStore implements Store {
             user.setAccount(account);
             session.save(user);
 
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             LOG.error(e.getMessage(), e);
@@ -54,7 +54,7 @@ public class DBStore implements Store {
         Transaction transaction = session.beginTransaction();
         try {
             result = session.createQuery("FROM carbuyer.models.Car").list();
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             LOG.error(e.getMessage(), e);
@@ -71,7 +71,7 @@ public class DBStore implements Store {
         Transaction transaction = session.beginTransaction();
         try {
             result = session.createQuery("FROM carbuyer.models.Advert").list();
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             LOG.error(e.getMessage(), e);
@@ -88,7 +88,7 @@ public class DBStore implements Store {
         Transaction transaction = session.beginTransaction();
         try {
             result = session.createQuery("FROM carbuyer.models.User").list();
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             LOG.error(e.getMessage(), e);
@@ -107,7 +107,7 @@ public class DBStore implements Store {
             result = session.createQuery("FROM carbuyer.models.Advert WHERE owner_id = :id")
                     .setParameter("id", user.getId())
                     .list();
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             LOG.error(e.getMessage(), e);
@@ -125,7 +125,7 @@ public class DBStore implements Store {
         try {
             result = session.createQuery("FROM carbuyer.models.Advert "
                     + "WHERE extract(day from created_date) > extract(day from current_date) - 1").list();
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             LOG.error(e.getMessage(), e);
@@ -142,7 +142,7 @@ public class DBStore implements Store {
         Transaction transaction = session.beginTransaction();
         try {
             result = session.createQuery("FROM carbuyer.models.Advert WHERE image_name != ''").list();
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             LOG.error(e.getMessage(), e);
@@ -172,7 +172,7 @@ public class DBStore implements Store {
                 query.setParameter("id", findId);
                 result = query.list();
             }
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             LOG.error(e.getMessage(), e);
@@ -187,10 +187,11 @@ public class DBStore implements Store {
         Session session = factory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
-            Query query = session.createQuery("UPDATE carbuyer.models.Advert SET status = :status1 WHERE id = :id");
-            query.setParameter("status1", advert.isStatus());
+            Query query = session.createQuery("UPDATE carbuyer.models.Advert SET status = :done WHERE id = :id");
+            query.setParameter("done", advert.isStatus());
             query.setParameter("id", advert.getId());
             query.executeUpdate();
+            transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             LOG.error(e.getMessage(), e);
@@ -207,19 +208,19 @@ public class DBStore implements Store {
         User owner;
         try {
             session.save(carBody);
-            car.setCarBody(new CarBody(carBody.getId()));
+            car.setCarBody(carBody);
 
             session.save(engine);
-            car.setEngine(new Engine(engine.getId()));
+            car.setEngine(engine);
 
             session.save(transmission);
-            car.setTransmission(new Transmission(transmission.getId()));
+            car.setTransmission(transmission);
 
             session.save(mark);
-            car.setMark(new Mark(mark.getId()));
+            car.setMark(mark);
 
             session.save(model);
-            car.setModel(new Model(model.getId()));
+            car.setModel(model);
 
             session.save(car);
 
@@ -228,12 +229,15 @@ public class DBStore implements Store {
             owner = session.load(User.class, user.getId());
 
             advert.setCar(car1);
+
             advert.setOwner(owner);
+
             session.save(advert);
-            session.getTransaction().commit();
+
+            transaction.commit();
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
             transaction.rollback();
+            LOG.error(e.getMessage(), e);
         } finally {
             session.close();
         }

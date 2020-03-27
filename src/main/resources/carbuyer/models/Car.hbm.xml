@@ -5,10 +5,10 @@
         </id>
         <property name="mileAge" column="mile_age"/>
         <property name="created" column="created"/>
-        <many-to-one name="mark" class="carbuyer.models.Mark" column="mark_id" lazy="false"/>
-        <many-to-one name="model" class="carbuyer.models.Model" column="model_id" lazy="false"/>
-        <many-to-one name="transmission" class="carbuyer.models.Transmission" column="transmission_id" lazy="false"/>
-        <many-to-one name="carBody" class="carbuyer.models.CarBody" column="car_body_id" lazy="false"/>
-        <many-to-one name="engine" class="carbuyer.models.Engine" column="engine_id" lazy="false"/>
+        <many-to-one name="mark" class="carbuyer.models.Mark" column="mark_id" lazy="false" cascade="all"/>
+        <many-to-one name="model" class="carbuyer.models.Model" column="model_id" lazy="false" cascade="all"/>
+        <many-to-one name="transmission" class="carbuyer.models.Transmission" column="transmission_id" lazy="false" cascade="all"/>
+        <many-to-one name="carBody" class="carbuyer.models.CarBody" column="car_body_id" lazy="false" cascade="all"/>
+        <many-to-one name="engine" class="carbuyer.models.Engine" column="engine_id" lazy="false" cascade="all"/>
     </class>
 </hibernate-mapping>
