@@ -3,6 +3,7 @@ package carowner.services;
 import carowner.models.Car;
 import carowner.models.Driver;
 import carowner.models.Engine;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.sql.Timestamp;
@@ -11,7 +12,7 @@ import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-
+@Ignore
 public class MappingTest {
 
     @Test
