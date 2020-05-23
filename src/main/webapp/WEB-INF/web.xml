@@ -6,46 +6,6 @@
          version="2.4">
 
     <servlet>
-        <servlet-name>AddItemServlet</servlet-name>
-        <servlet-class>todolist.servlets.AddItemServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>AddItemServlet</servlet-name>
-        <url-pattern>/add</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>ShowItemsServlet</servlet-name>
-        <servlet-class>todolist.servlets.ShowItemsServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ShowItemsServlet</servlet-name>
-        <url-pattern>/show</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>UpdateItemServlet</servlet-name>
-        <servlet-class>todolist.servlets.UpdateItemServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>UpdateItemServlet</servlet-name>
-        <url-pattern>/update</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>FilterItemsServlet</servlet-name>
-        <servlet-class>todolist.servlets.FilterItemsServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>FilterItemsServlet</servlet-name>
-        <url-pattern>/filter</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>ShowAllAdvertsServlet</servlet-name>
         <servlet-class>carbuyer.servlets.ShowAllAdvertsServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
