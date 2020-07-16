@@ -29,8 +29,7 @@ public class DBStore implements Store {
 
     @Override
     public User addUser(User user, Account account) {
-        Session session = factory.openSession();
-        try (session) {
+        try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
             session.save(account);
 
@@ -48,8 +47,7 @@ public class DBStore implements Store {
     @Override
     public List<Car> getCars() {
         List<Car> result = new ArrayList<>();
-        Session session = factory.openSession();
-        try (session) {
+        try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
             result = session.createQuery("FROM carbuyer.models.Car").list();
             transaction.commit();
@@ -63,8 +61,7 @@ public class DBStore implements Store {
     @Override
     public List<Advert> findAll() {
         List<Advert> result = new ArrayList<>();
-        Session session = factory.openSession();
-        try (session) {
+        try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
             result = session.createQuery("FROM carbuyer.models.Advert").list();
             transaction.commit();
@@ -78,8 +75,7 @@ public class DBStore implements Store {
     @Override
     public List<User> getUsers() {
         List<User> result = new ArrayList<>();
-        Session session = factory.openSession();
-        try (session) {
+        try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
             result = session.createQuery("FROM carbuyer.models.User").list();
             transaction.commit();
@@ -93,8 +89,7 @@ public class DBStore implements Store {
     @Override
     public List<Advert> getAdvertsUser(User user) {
         List<Advert> result = new ArrayList<>();
-        Session session = factory.openSession();
-        try (session) {
+        try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
             result = session.createQuery("FROM carbuyer.models.Advert WHERE owner_id = :id")
                     .setParameter("id", user.getId())
@@ -110,8 +105,7 @@ public class DBStore implements Store {
     @Override
     public List<Advert> showLastDay() {
         List<Advert> result = new ArrayList<>();
-        Session session = factory.openSession();
-        try (session) {
+        try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
             result = session.createQuery("FROM carbuyer.models.Advert "
                     + "WHERE extract(day from created_date) > extract(day from current_date) - 1").list();
@@ -126,8 +120,7 @@ public class DBStore implements Store {
     @Override
     public List<Advert> showWithPhoto() {
         List<Advert> result = new ArrayList<>();
-        Session session = factory.openSession();
-        try (session) {
+        try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
             result = session.createQuery("FROM carbuyer.models.Advert WHERE image_name != ''").list();
             transaction.commit();
@@ -141,8 +134,7 @@ public class DBStore implements Store {
     @Override
     public List<Advert> showWithSpecificMark(Mark mark) {
         List<Advert> result = new ArrayList<>();
-        Session session = factory.openSession();
-        try (session) {
+        try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
             Query query = session.createQuery(
                     "select adv FROM Advert adv "
@@ -161,8 +153,7 @@ public class DBStore implements Store {
 
     @Override
     public void updateStatus(Advert advert) {
-        Session session = factory.openSession();
-        try (session) {
+        try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
             Query query = session.createQuery("UPDATE carbuyer.models.Advert SET status = :done WHERE id = :id");
             query.setParameter("done", advert.isStatus());
@@ -178,8 +169,7 @@ public class DBStore implements Store {
     @Override
     public void addNewAdvert(CarBody carBody, Engine engine, Transmission transmission,
                              Mark mark, Model model, User user, Car car, Advert advert) {
-        Session session = factory.openSession();
-        try (session) {
+        try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
             User owner;
             session.save(carBody);

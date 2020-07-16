@@ -27,79 +27,56 @@ public class DBStoreTest {
         session = factory.openSession();
         store = new DBStore(factory);
 
-        CarBody body = new CarBody();
-        body.setType("sedan");
-        body.setColor("black");
-        body.setCountDoor(5);
+        CarBody body = new CarBody("sedan", "black", 5);
+        Engine engine = new Engine(1.6, 85, "petrol");
+        Transmission transmission = new Transmission("automatic", "rear");
+        Mark mark = new Mark("Kia");
+        Model model = new Model("Rio");
+        Car car = new Car(50000, new Timestamp(1425168000000L));
+        User user = new User("Stas", "+375295046003", "Slutsk");
+        Account account = new Account("root", "root");
 
-        Engine engine = new Engine();
-        engine.setVolume(1.6);
-        engine.setType("petrol");
-        engine.setPower(85);
-
-        Transmission transmission = new Transmission();
-        transmission.setGearBox("automatic");
-        transmission.setGearType("rear");
-
-        Mark mark = new Mark();
-        mark.setName("Kia");
-
-        Model model = new Model();
-        model.setName("Rio");
-
-        Car car = new Car();
-        car.setCreated(new Timestamp(1425168000000L));
-        car.setMileAge(50000);
-
-        User user = new User();
-        user.setName("Stas");
-        user.setPhone("+375295046003");
-        user.setAddress("Slutsk");
-
-        Account account = new Account();
-        account.setLogin("root");
-        account.setPassword("root");
-
-        Advert advert = new Advert();
-        advert.setImageName("image1.png");
-        advert.setStatus(false);
-        advert.setPrice(250000);
-        advert.setCreatedDate(new Timestamp(System.currentTimeMillis() - 500000));
+        Advert advert = new Advert(
+                250000,
+                false,
+                new Timestamp(System.currentTimeMillis() - 500000),
+                "image1.png"
+        );
 
         User addUser = store.addUser(user, account);
         store.addNewAdvert(body, engine, transmission, mark, model, addUser, car, advert);
 
-        CarBody body1 = new CarBody();
-        body1.setType("hatchback");
-        body1.setColor("yellow");
-        body1.setCountDoor(5);
+        CarBody carBody = new CarBody();
+        carBody.setType("hatchback");
+        carBody.setColor("yellow");
+        carBody.setCountDoor(5);
 
-        Engine engine1 = new Engine();
-        engine1.setVolume(1.5);
-        engine1.setPower(80);
-        engine1.setType("diesel");
+        Engine eSecond = new Engine();
+        eSecond.setVolume(1.5);
+        eSecond.setPower(80);
+        eSecond.setType("diesel");
 
-        Transmission transmission1 = new Transmission();
-        transmission1.setGearBox("mechanic");
-        transmission1.setGearType("front");
+        Transmission tSecond = new Transmission();
+        tSecond.setGearBox("mechanic");
+        tSecond.setGearType("front");
 
-        Mark mark1 = new Mark();
-        mark1.setName("Renault");
+        Mark mSecond = new Mark();
+        mSecond.setName("Renault");
 
-        Model model1 = new Model();
-        model1.setName("Sandero II");
+        Model modSecond = new Model();
+        modSecond.setName("Sandero II");
 
-        Car car1 = new Car();
-        car1.setCreated(new Timestamp(1551398400000L));
-        car1.setMileAge(10000);
+        Car cSecond = new Car();
+        cSecond.setCreated(new Timestamp(1551398400000L));
+        cSecond.setMileAge(10000);
 
-        Advert advert1 = new Advert();
-        advert1.setImageName("");
-        advert1.setStatus(false);
-        advert1.setPrice(3250000);
-        advert1.setCreatedDate(new Timestamp(System.currentTimeMillis() - 500000));
+        Advert aSecond = new Advert();
+        aSecond.setImageName("");
+        aSecond.setStatus(false);
+        aSecond.setPrice(3250000);
+        aSecond.setCreatedDate(new Timestamp(System.currentTimeMillis() - 500000));
 
-        store.addNewAdvert(body1, engine1, transmission1, mark1, model1, addUser, car1, advert1);
+        store.addNewAdvert(carBody, eSecond, tSecond, mSecond, modSecond, addUser, cSecond, aSecond);
     }
 
     @After
@@ -187,6 +164,5 @@ public class DBStoreTest {
         List<Advert> list = store.findAll();
 
         assertThat(list.size(), is(2));
-
     }
 }

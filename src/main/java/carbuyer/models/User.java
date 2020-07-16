@@ -27,6 +27,12 @@ public class User {
     public User() {
     }
 
+    public User(String name, String phone, String address) {
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+    }
+
     public User(int id) {
         this.id = id;
     }
