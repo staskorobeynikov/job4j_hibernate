@@ -2,94 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Registration</title>
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-          crossorigin="anonymous">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <title>REGISTRATION</title>
 </head>
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous">
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous">
-</script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous">
-</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script>
-    $(document).on("keyup", ":password", function () {
-        let input1 = $("#password").val();
-        let input2 = $("#cor_password").val();
-        if (input1 !== input2) {
-            $("#cor_password").attr("style", "background-color: red");
-            $("#submit").attr("disabled", "disabled");
-            $(".error").html("Passwords do not match");
-        } else {
-            $("#submit").removeAttr("disabled");
-            $("#cor_password").removeAttr("style");
-            $(".error").html("");
-        }
-    });
-</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" ></script>
+<script src="scripts/registration.js"></script>
 <body>
-<form action="./addUser" method="post" class="container">
-    <div class="col-sm-5">
-        <h3>Fill the form for registration</h3>
-    </div>
-    <div>
-        <br/>
-    </div>
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="name" style="font-weight: 900">Your name</label>
-        <div class="col-sm-5">
-            <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" required>
+<div class="container pt-1">
+    <div class="row">
+        <div class="card" style="width: 50%">
+            <div class="card-header" style="font-weight: bold; font-size: larger">
+                Fill the form for registration
+            </div>
+            <div class="card-body">
+                <form action="./addUser" method="post">
+                    <div class="form-group">
+                        <label for="name" style="font-weight: bold">Your name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" style="font-weight: bold">Your phone number</label>
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter your phone number..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address" style="font-weight: bold">Your address</label>
+                        <textarea rows="2" class="form-control" id="address" name="address" placeholder="Enter your address..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="login" style="font-weight: bold">Your login</label>
+                        <input type="text" class="form-control" id="login" name="login" placeholder="Enter login..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" style="font-weight: bold">Your password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password...">
+                    </div>
+                    <div class="form-group">
+                        <label for="cor_password" style="font-weight: bold">Repeat password</label>
+                        <input type="password" class="form-control" id="cor_password" name="cor_password" placeholder="Enter password again...">
+                        <div class="error">
+                        </div>
+                    </div>
+                    <button type="submit" id="submit" class="btn btn-dark">Add new user</button>
+                </form>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="phone" style="font-weight: 900">Your phone number</label>
-        <div class="col-sm-5">
-            <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter phone number" required>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="address" style="font-weight: 900">Your address</label>
-        <div class="col-sm-5">
-            <textarea rows="3" class="form-control" id="address" name="address" placeholder="Enter address" required></textarea>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="login" style="font-weight: 900">Your login</label>
-        <div class="col-sm-5">
-            <input type="text" class="form-control" id="login" name="login" placeholder="Enter login" required>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="password" style="font-weight: 900">Your password</label>
-        <div class="col-sm-5">
-            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="cor_password" style="font-weight: 900">Repeat password</label>
-        <div class="col-sm-5">
-            <input type="password" class="form-control" id="cor_password" name="cor_password" placeholder="Enter password again">
-        </div>
-        <div class="error">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" style="font-weight: 900"></label>
-        <div class="col-sm-5">
-            <button type="submit" id="submit" class="btn btn-dark">Add new user</button>
-        </div>
-    </div>
-</form>
+</div>
 </body>
 </html>

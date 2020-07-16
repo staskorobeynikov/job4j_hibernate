@@ -6,21 +6,24 @@ import java.util.Objects;
 @Entity
 @Table(name = "carbodies")
 public class CarBody {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "type")
     private String type;
 
-    @Column(name = "color")
     private String color;
 
     @Column(name = "count_doors")
     private int countDoor;
 
     public CarBody() {
+    }
+
+    public CarBody(String type, String color, int countDoor) {
+        this.type = type;
+        this.color = color;
+        this.countDoor = countDoor;
     }
 
     public CarBody(int id) {

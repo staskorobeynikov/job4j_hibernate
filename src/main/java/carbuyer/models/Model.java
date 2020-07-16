@@ -6,15 +6,17 @@ import java.util.Objects;
 @Entity
 @Table(name = "models")
 public class Model {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name")
     private String name;
 
     public Model() {
+    }
+
+    public Model(String name) {
+        this.name = name;
     }
 
     public Model(int id) {

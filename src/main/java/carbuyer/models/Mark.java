@@ -6,15 +6,17 @@ import java.util.Objects;
 @Entity
 @Table(name = "marks")
 public class Mark {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name")
     private String name;
 
     public Mark() {
+    }
+
+    public Mark(String name) {
+        this.name = name;
     }
 
     public Mark(int id) {

@@ -7,38 +7,41 @@ import java.util.Objects;
 @Entity
 @Table(name = "cars")
 public class Car {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "mark_id", foreignKey = @ForeignKey(name = "mark_id_fk"))
+    @JoinColumn(name = "mark_id")
     private Mark mark;
 
     @ManyToOne
-    @JoinColumn(name = "model_id", foreignKey = @ForeignKey(name = "model_id_fk"))
+    @JoinColumn(name = "model_id")
     private Model model;
 
     @Column(name = "mile_age")
     private int mileAge;
 
-    @Column(name = "created")
     private Timestamp created;
 
     @ManyToOne
-    @JoinColumn(name = "transmission_id", foreignKey = @ForeignKey(name = "transmission_id_fk"))
+    @JoinColumn(name = "transmission_id")
     private Transmission transmission;
 
     @ManyToOne
-    @JoinColumn(name = "car_body_id", foreignKey = @ForeignKey(name = "car_body_id_fk"))
+    @JoinColumn(name = "car_body_id")
     private CarBody carBody;
 
     @ManyToOne
-    @JoinColumn(name = "engine_id", foreignKey = @ForeignKey(name = "engine_id_fk"))
+    @JoinColumn(name = "engine_id")
     private Engine engine;
 
     public Car() {
+    }
+
+    public Car(int mileAge, Timestamp created) {
+        this.mileAge = mileAge;
+        this.created = created;
     }
 
     public Car(int id) {

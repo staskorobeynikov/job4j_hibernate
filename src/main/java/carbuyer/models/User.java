@@ -21,7 +21,7 @@ public class User {
     private String address;
 
     @ManyToOne
-    @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "account_id_fk"))
+    @JoinColumn(name = "account_id")
     private Account account;
 
     public User() {

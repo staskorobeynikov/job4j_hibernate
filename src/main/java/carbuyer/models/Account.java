@@ -6,18 +6,20 @@ import java.util.Objects;
 @Entity
 @Table(name = "accounts")
 public class Account {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "login")
     private String login;
 
-    @Column(name = "password")
     private String password;
 
     public Account() {
+    }
+
+    public Account(String login, String password) {
+        this.login = login;
+        this.password = password;
     }
 
     public Account(int id) {

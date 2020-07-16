@@ -6,21 +6,23 @@ import java.util.Objects;
 @Entity
 @Table(name = "engine")
 public class Engine {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "volume")
     private double volume;
 
-    @Column(name = "power")
     private int power;
 
-    @Column(name = "type")
     private String type;
 
     public Engine() {
+    }
+
+    public Engine(double volume, int power, String type) {
+        this.volume = volume;
+        this.power = power;
+        this.type = type;
     }
 
     public Engine(int id) {

@@ -8,7 +8,6 @@
     <servlet>
         <servlet-name>ShowAllAdvertsServlet</servlet-name>
         <servlet-class>carbuyer.servlets.ShowAllAdvertsServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>ShowAllAdvertsServlet</servlet-name>
@@ -18,7 +17,6 @@
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>carbuyer.servlets.LoginServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
@@ -28,7 +26,6 @@
     <servlet>
         <servlet-name>ShowUserAdvertsServlet</servlet-name>
         <servlet-class>carbuyer.servlets.ShowUserAdvertsServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>ShowUserAdvertsServlet</servlet-name>
@@ -38,7 +35,6 @@
     <servlet>
         <servlet-name>UpdateStatusServlet</servlet-name>
         <servlet-class>carbuyer.servlets.UpdateStatusServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>UpdateStatusServlet</servlet-name>
@@ -48,7 +44,6 @@
     <servlet>
         <servlet-name>DownloadServlet</servlet-name>
         <servlet-class>carbuyer.servlets.DownloadServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>DownloadServlet</servlet-name>
@@ -58,7 +53,6 @@
     <servlet>
         <servlet-name>AddNewAdvertServlet</servlet-name>
         <servlet-class>carbuyer.servlets.AddNewAdvertServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>AddNewAdvertServlet</servlet-name>
@@ -68,7 +62,6 @@
     <servlet>
         <servlet-name>AddNewUserServlet</servlet-name>
         <servlet-class>carbuyer.servlets.AddNewUserServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>AddNewUserServlet</servlet-name>
@@ -78,7 +71,6 @@
     <servlet>
         <servlet-name>CarShowDetailsServlet</servlet-name>
         <servlet-class>carbuyer.servlets.CarShowDetailsServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>CarShowDetailsServlet</servlet-name>
@@ -88,7 +80,6 @@
     <servlet>
         <servlet-name>ShowLastDayAdvertsServlet</servlet-name>
         <servlet-class>carbuyer.servlets.ShowLastDayAdvertsServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>ShowLastDayAdvertsServlet</servlet-name>
@@ -98,7 +89,6 @@
     <servlet>
         <servlet-name>ShowAdvertsWithPhotoServlet</servlet-name>
         <servlet-class>carbuyer.servlets.ShowAdvertsWithPhotoServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>ShowAdvertsWithPhotoServlet</servlet-name>
@@ -108,7 +98,6 @@
     <servlet>
         <servlet-name>ShowAdvertsSpecificMarkServlet</servlet-name>
         <servlet-class>carbuyer.servlets.ShowAdvertsSpecificMarkServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>ShowAdvertsSpecificMarkServlet</servlet-name>

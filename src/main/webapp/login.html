@@ -2,96 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-          crossorigin="anonymous">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <title>LOGIN</title>
 </head>
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous">
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous">
-</script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous">
-</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" ></script>
 <body>
-<script>
-    function checkAccount() {
-        $.ajax({
-            type: 'POST',
-            url: './login',
-            data: {login : $('#login').val(), password : $('#password').val()},
-            dataType: 'json',
-            success: function ($data) {
-                if ($data['answer'] !== undefined) {
-                    alert($data['answer']);
-                }
-                if ($data['user'] !== undefined) {
-                    setTimeout(function () {
-                        window.location.href = "/buyer/adverts.html?user=" + $data['user'].id;
-                    }, 1000);
-                }
-            }
-        });
-    }
-
-    function validate() {
-        let result = true;
-        let answer = '';
-        let elements = [$('#login'), $('#password')];
-        for (let i = 0; i < elements.length; i++) {
-            if (elements[i].val() === '') {
-                answer += "Please, " + elements[i].attr("placeholder").toLowerCase() + "\n";
-                result = false;
-            }
-        }
-        if (!result) {
-            alert(answer);
-        }
-        return result;
-    }
-
-    function logIn() {
-        if (validate()) {
-            checkAccount();
-        }
-    }
-
-    function redirect() {
-        window.location.href = "/buyer/registration.html"
-    }
-</script>
-<form class="container">
-    <div class="form-group row">
-        <label class="col-form-label col-sm-1" for="login" style="font-weight: 900">Login</label>
-        <div class="col-sm-5">
-            <input type="text" class="form-control" id="login" name="login" placeholder="Enter login">
+<script src="scripts/login.js"></script>
+<div class="container pt-2">
+    <div class="row">
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="registration.html" style="font-weight: bold">Регистрация</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="card" style="width: 50%">
+            <div class="card-header" style="font-weight: bold; font-size: larger">
+                Авторизация
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <label for="login" style="font-weight: bold">Login</label>
+                        <input type="text" class="form-control" name="login" id="login" placeholder="Enter your login...">
+                    </div>
+                    <div class="form-group">
+                        <label for="password" style="font-weight: bold">Пароль</label>
+                        <input type="text" class="form-control" name="password" id="password" placeholder="Enter your password...">
+                    </div>
+                    <button type="button" class="btn btn-dark" onclick="logIn()">Login account</button>
+                </form>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-form-label col-sm-1" for="password" style="font-weight: 900">Password</label>
-        <div class="col-sm-5">
-            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-form-label col-sm-1" style="font-weight: 900"></label>
-        <div class="col">
-            <button type="button" class="btn btn-dark" onclick="logIn()">Login account</button>
-        </div>
-        <div class="col-sm-9">
-            <button type="button" class="btn btn-dark" onclick="redirect()">Registration</button>
-        </div>
-    </div>
-</form>
+</div>
 </body>
 </html>

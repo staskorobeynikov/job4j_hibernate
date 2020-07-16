@@ -13,26 +13,31 @@ public class Advert {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", foreignKey = @ForeignKey(name = "owner_id_fk"))
+    @JoinColumn(name = "owner_id")
     private User owner;
 
     @ManyToOne
-    @JoinColumn(name = "car_id", foreignKey = @ForeignKey(name = "car_id_fk"))
+    @JoinColumn(name = "car_id")
     private Car car;
 
     @Column(name = "image_name")
     private String imageName;
 
-    @Column(name = "price")
     private int price;
 
     @Column(name = "created_date")
     private Timestamp createdDate;
 
-    @Column(name = "status")
     private boolean status;
 
     public Advert() {
+    }
+
+    public Advert(int price, boolean status, Timestamp createdDate, String imageName) {
+        this.imageName = imageName;
+        this.price = price;
+        this.createdDate = createdDate;
+        this.status = status;
     }
 
     public Advert(int id) {

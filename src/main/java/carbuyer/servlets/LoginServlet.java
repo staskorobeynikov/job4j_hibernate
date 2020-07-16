@@ -21,9 +21,7 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-        Account account = new Account();
-        account.setLogin(login);
-        account.setPassword(password);
+        Account account = new Account(login, password);
         User findUser = validate.isCredential(account);
         String json;
         if (findUser == null) {
@@ -32,6 +30,7 @@ public class LoginServlet extends HttpServlet {
             json = new Gson().toJson(answer);
         } else {
             Map<String, User> users = new HashMap<>();
+            req.getSession().setAttribute("user", findUser);
             users.put("user", findUser);
             json = new Gson().toJson(users);
         }

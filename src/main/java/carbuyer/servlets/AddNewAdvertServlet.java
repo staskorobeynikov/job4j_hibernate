@@ -50,9 +50,6 @@ public class AddNewAdvertServlet extends HttpServlet {
                     }
                 } else {
                     switch (item.getFieldName()) {
-                        case "id":
-                            id = item.getString();
-                            break;
                         case "mark":
                             mark = item.getString();
                             break;
@@ -101,44 +98,39 @@ public class AddNewAdvertServlet extends HttpServlet {
             LOG.error(e.getMessage(), e);
         }
 
-        CarBody carBody = new CarBody();
-        carBody.setType(carBodyType);
-        carBody.setColor(carBodyColor);
-        carBody.setCountDoor(Integer.parseInt(carBodyDoors));
+        CarBody carBody = new CarBody(carBodyType, carBodyColor, Integer.parseInt(carBodyDoors));
 
-        Engine engine = new Engine();
-        engine.setVolume(Double.parseDouble(engineVolume));
-        engine.setPower(Integer.parseInt(enginePower));
-        engine.setType(engineType);
+        Engine engine = new Engine(
+                Double.parseDouble(engineVolume),
+                Integer.parseInt(enginePower),
+                engineType
+        );
 
-        Transmission transmission = new Transmission();
-        transmission.setGearBox(gearBox);
-        transmission.setGearType(gearType);
+        Transmission transmission = new Transmission(gearBox, gearType);
 
-        Mark mark1 = new Mark();
-        mark1.setName(mark);
+        Mark mark1 = new Mark(mark);
 
-        Model model1 = new Model();
-        model1.setName(model);
+        Model model1 = new Model(model);
 
-        User user = new User();
-        user.setId(Integer.parseInt(id));
+        User user = (User) req.getSession().getAttribute("user");
 
-        Car car = new Car();
-        car.setMileAge(Integer.parseInt(mileAge));
-        String[] split = created.split("-");
-        String created1 = String.format("%s-%s-%s %s", split[0], split[1], split[2], "00:00:00.0");
-        car.setCreated(Timestamp.valueOf(created1));
+        Car car = new Car(Integer.parseInt(mileAge), Timestamp.valueOf(getDateString(created)));
 
-        Advert advert = new Advert();
-        advert.setPrice(Integer.parseInt(price));
-        advert.setStatus(false);
-        advert.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-        advert.setImageName(photo);
+        Advert advert = new Advert(
+                Integer.parseInt(price),
+                false,
+                new Timestamp(System.currentTimeMillis()),
+                photo
+        );
 
         validate.addNewAdvert(carBody, engine, transmission, mark1, model1, user, car, advert);
 
-        resp.sendRedirect(String.format("%s/adverts.html?user=%s", req.getContextPath(), id));
+        resp.sendRedirect(String.format("%s/adverts.html?user=%s", req.getContextPath(), user.getId()));
+    }
+
+    private String getDateString(String created) {
+        String[] split = created.split("-");
+        return String.format("%s-%s-%s %s", split[0], split[1], split[2], "00:00:00.0");
     }
 
     private boolean isDuplicateName(String fileName) {

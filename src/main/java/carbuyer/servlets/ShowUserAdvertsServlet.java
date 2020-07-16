@@ -18,9 +18,7 @@ public class ShowUserAdvertsServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String id = req.getParameter("id");
-        User user = new User();
-        user.setId(Integer.parseInt(id));
+        User user = (User) req.getSession().getAttribute("user");
         List<Advert> list = validate.getAdvertsUser(user);
         String json = new Gson().toJson(list);
         resp.setContentType("json");

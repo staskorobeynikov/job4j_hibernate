@@ -2,216 +2,85 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <title>ShowAllAdverts</title>
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-          crossorigin="anonymous">
 </head>
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous">
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous">
-</script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous">
-</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<style>
-    .account {
-        position: fixed;
-        right: 1px;
-        top: 1px;
-    }
-</style>
-<script>
-    $(document).ready(function () {
-        showAll();
-    });
-
-    function showAll() {
-        $.ajax({
-            type: 'POST',
-            url: './cars',
-            dataType: 'json',
-            success: function ($data) {
-                addRows($data)
-            }
-        });
-    }
-
-    function addRows(data) {
-        let adverts = data;
-        for (let i = 0; i < adverts.length; i++) {
-            let id = adverts[i].id;
-            let carAdd = adverts[i]['car'].mark.name + '\n' + adverts[i]['car'].model.name;
-            let price = adverts[i]['price'];
-            let seller = adverts[i]['owner'].name + '\n' + adverts[i]['owner'].phone;
-            let photo = adverts[i]['imageName'];
-            let dateAdd = adverts[i]['createdDate'];
-            let status = adverts[i]['status'];
-            if (status === false) {
-                status = "В продаже";
-            } else {
-                status = "Продано";
-            }
-            $('#allAdverts tr:last').after(
-              '<tr class="rows"><td id="car">' + carAdd + "</br></br>"
-                + '<button id="' + id + '" type="button" class="btn btn-primary" data-toggle="modal" data-target="#carInfo">'
-                + 'Details</button></td>'
-                + '<td id="price">' + price + '</td>'
-                + '<td id="seller">' + seller + '</td>'
-                + '<td id="photo"><img src="./download?name=' + photo + '" width="200px" height="150px"></td>'
-                + '<td id="date_add">' + dateAdd + '</td>'
-                + '<td id="status">' + status + '</td></tr>'
-            );
-        }
-    }
-</script>
-<script>
-    $(document).on('click', ':button', function () {
-        let id = $(this).attr('id');
-        if (id !== 'add') {
-            $.ajax({
-                type: 'POST',
-                url: './info',
-                data: {id : id},
-                dataType: 'json',
-                success: function (data) {
-                    addInfo(data);
-                }
-            });
-        }
-    });
-
-    function addInfo(data) {
-        let car = data;
-        document.getElementById("infoLabel").innerHTML = car.mark.name + "\n" + car.model.name;
-        let result = "<tr><td>Mile age</td><td>" + car.mileAge + " km</td></tr>";
-        result += "<tr><td>Date created</td><td>" + car.created + "</td></tr>";
-        result += "<tr><td>Gear box</td><td>" + car.transmission.gearBox + "</td></tr>";
-        result += "<tr><td>Gear type</td><td>" + car.transmission.gearType + "</td></tr>";
-        result += "<tr><td>Car body type</td><td>" + car.carBody.type + "</td></tr>";
-        result += "<tr><td>Car body color</td><td>" + car.carBody.color + "</td></tr>";
-        result += "<tr><td>Count door</td><td>" + car.carBody.countDoor + "</td></tr>";
-        result += "<tr><td>Engine volume</td><td>" + car.engine.volume + " l</td></tr>";
-        result += "<tr><td>Engine power</td><td>" + car.engine.power + " hp</td></tr>";
-        result += "<tr><td>Engine type</td><td>" + car.engine.type + "</td></tr>";
-        document.getElementById("info").innerHTML = result;
-    }
-</script>
-<script>
-    function enter() {
-        window.location.href = "/buyer/login.html";
-    }
-</script>
-<script>
-    $(document).on('change', ':checkbox', function () {
-        let id = $(this).attr("id");
-        console.log(id);
-        if (id !== "fPhoto") {
-            deleteRows();
-            let check = $(this).prop("checked");
-            if (check) {
-                $.ajax({
-                    type: 'POST',
-                    url: './lastday',
-                    dataType: 'json',
-                    success: function ($data) {
-                        addRows($data);
-                    }
-                });
-            } else {
-                location.reload();
-            }
-        } else {
-            deleteRows();
-            let check = $(this).prop("checked");
-            if (check) {
-                $.ajax({
-                   type: 'POST',
-                   url: './withphoto',
-                   dataType: 'json',
-                   success: function ($data) {
-                       addRows($data);
-                   }
-                });
-            } else {
-                location.reload();
-            }
-        }
-    });
-
-    function deleteRows() {
-        let rows = document.getElementsByClassName("rows");
-        console.log(rows.length);
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].innerHTML = "";
-        }
-    }
-</script>
-
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" ></script>
+<script src="scripts/index.js"></script>
 <body>
-<div class="container">
-    <div class="form-inline">
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" value="filter" name="filter" id="filter" onchange="">
-            <label class="form-check-label" for="filter" style="font-weight: 900">Show last day</label>
+<div class="container pt-2">
+    <div class="row">
+        <div class="col-2">
+            <ul class="nav">
+                <li class="nav-item">
+                    <input type="checkbox" value="filter" name="filter" id="filter" onchange="">
+                    <label for="filter" style="font-weight: 900">Show last day</label>
+                </li>
+            </ul>
         </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" value="fPhoto" name="fPhoto" id="fPhoto" onchange="">
-            <label class="form-check-label" for="fPhoto" style="font-weight: 900">Show with photo</label>
+        <div class="col-2">
+            <ul class="nav">
+                <li class="nav-item">
+                    <input type="checkbox" value="fPhoto" name="fPhoto" id="fPhoto" onchange="">
+                    <label for="fPhoto" style="font-weight: 900">Show with photo</label>
+                </li>
+            </ul>
         </div>
-        <label class="col-form-label col-sm-2" for="mark" style="font-weight: 900">Show cars mark</label>
+        <label for="mark" style="font-weight: 900">Show cars mark</label>
         <div class="col">
-            <select class="custom-select" id="mark" name="mark">
-                <option selected>Choose...</option>
-                <option value="Toyota">Toyota</option>
-                <option value="Mercedes">Mercedes</option>
-                <option value="Renault">Renault</option>
-                <option value="Kia">Kia</option>
-                <option value="Volvo">Volvo</option>
-            </select>
+            <ul class="nav">
+                <li class="nav-item">
+                    <select class="custom-select" id="mark" name="mark" onchange="showAdvertsMark()">
+                        <option selected>Choose...</option>
+                        <option value="Toyota">Toyota</option>
+                        <option value="Mercedes">Mercedes</option>
+                        <option value="Renault">Renault</option>
+                        <option value="Kia">Kia</option>
+                        <option value="Volvo">Volvo</option>
+                    </select>
+                </li>
+            </ul>
         </div>
-        <script>
-            $(".custom-select").change(function () {
-                let selectModel = $(this).val();
-                deleteRows();
-                $.ajax({
-                    type: 'POST',
-                    url: './marks',
-                    data: {mark : selectModel},
-                    dataType: 'json',
-                    success: function ($data) {
-                        addRows($data);
-                    }
-                });
-            })
-        </script>
+        <div style="position: fixed; right: 1px; top: 16px">
+            <ul class="nav">
+                <li class="nav-item">
+                    <button type="button" class="btn btn-outline-dark" onclick="enter()">Войти</button>
+                </li>
+            </ul>
+        </div>
     </div>
-    <div class="account">
-        <button id="add" type="button" class="btn btn-outline-dark" onclick="enter()">Add</button>
+    <div class="row pt-2">
+        <div class="card" style="width: 100%">
+            <div class="card-header" style="font-weight: bold; font-size: larger">
+                Онлайн-площадка для размещения объявления о продаже автомобилей
+            </div>
+            <div class="card-body">
+                <table class="table table-striped, table-bordered" id="allAdverts">
+                    <thead class="thead-dark">
+                    <tr style="text-align: center">
+                        <th scope="col">Car</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Seller</th>
+                        <th scope="col">Photo</th>
+                        <th scope="col">Date add</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
     </div>
-</div>
-<div class="container">
-    <table class="table table-striped, table-bordered" id="allAdverts">
-        <thead class="thead-dark">
-        <tr align="middle">
-            <th scope="col">Car</th>
-            <th scope="col">Price</th>
-            <th scope="col">Seller</th>
-            <th scope="col">Photo</th>
-            <th scope="col">Date add</th>
-            <th scope="col">Status</th>
-        </tr>
-        </thead>
-    </table>
 </div>
 <div class="modal fade" id="carInfo" tabindex="-1" role="dialog" aria-labelledby="infoLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

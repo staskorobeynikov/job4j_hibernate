@@ -20,6 +20,11 @@ public class Transmission {
     public Transmission() {
     }
 
+    public Transmission(String gearBox, String gearType) {
+        this.gearBox = gearBox;
+        this.gearType = gearType;
+    }
+
     public Transmission(int id) {
         this.id = id;
     }
