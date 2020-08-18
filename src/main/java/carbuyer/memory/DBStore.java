@@ -11,25 +11,26 @@ import org.hibernate.query.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBStore implements Store {
-
-    private static final DBStore INSTANCE = new DBStore(HibernateFactory.getFactory());
+public class DBStore implements Store, AutoCloseable {
+    private final SessionFactory sf;
 
     private static final Logger LOG = LogManager.getLogger(DBStore.class.getName());
 
-    private final SessionFactory factory;
+    private DBStore() {
+        this.sf = HibernateFactory.getFactory();
+    }
 
-    public DBStore(SessionFactory factory) {
-        this.factory = factory;
+    private static final class Lazy {
+        private static final DBStore INSTANCE = new DBStore();
     }
 
     public static DBStore getInstance() {
-        return INSTANCE;
+        return Lazy.INSTANCE;
     }
 
     @Override
     public User addUser(User user, Account account) {
-        try (Session session = factory.openSession()) {
+        try (Session session = sf.openSession()) {
             Transaction transaction = session.beginTransaction();
             session.save(account);
 
@@ -38,7 +39,7 @@ public class DBStore implements Store {
 
             transaction.commit();
         } catch (Exception e) {
-            factory.getCurrentSession().getTransaction().rollback();
+            sf.getCurrentSession().getTransaction().rollback();
             LOG.error(e.getMessage(), e);
         }
         return user;
@@ -47,12 +48,12 @@ public class DBStore implements Store {
     @Override
     public List<Car> getCars() {
         List<Car> result = new ArrayList<>();
-        try (Session session = factory.openSession()) {
+        try (Session session = sf.openSession()) {
             Transaction transaction = session.beginTransaction();
-            result = session.createQuery("FROM carbuyer.models.Car").list();
+            result = session.createQuery("select c from Car c", Car.class).list();
             transaction.commit();
         } catch (Exception e) {
-            factory.getCurrentSession().getTransaction().rollback();
+            sf.getCurrentSession().getTransaction().rollback();
             LOG.error(e.getMessage(), e);
         }
         return result;
@@ -61,12 +62,12 @@ public class DBStore implements Store {
     @Override
     public List<Advert> findAll() {
         List<Advert> result = new ArrayList<>();
-        try (Session session = factory.openSession()) {
+        try (Session session = sf.openSession()) {
             Transaction transaction = session.beginTransaction();
-            result = session.createQuery("FROM carbuyer.models.Advert").list();
+            result = session.createQuery("select a from Advert a", Advert.class).list();
             transaction.commit();
         } catch (Exception e) {
-            factory.getCurrentSession().getTransaction().rollback();
+            sf.getCurrentSession().getTransaction().rollback();
             LOG.error(e.getMessage(), e);
         }
         return result;
@@ -75,12 +76,12 @@ public class DBStore implements Store {
     @Override
     public List<User> getUsers() {
         List<User> result = new ArrayList<>();
-        try (Session session = factory.openSession()) {
+        try (Session session = sf.openSession()) {
             Transaction transaction = session.beginTransaction();
-            result = session.createQuery("FROM carbuyer.models.User").list();
+            result = session.createQuery("select u from User u", User.class).list();
             transaction.commit();
         } catch (Exception e) {
-            factory.getCurrentSession().getTransaction().rollback();
+            sf.getCurrentSession().getTransaction().rollback();
             LOG.error(e.getMessage(), e);
         }
         return result;
@@ -89,14 +90,17 @@ public class DBStore implements Store {
     @Override
     public List<Advert> getAdvertsUser(User user) {
         List<Advert> result = new ArrayList<>();
-        try (Session session = factory.openSession()) {
+        try (Session session = sf.openSession()) {
             Transaction transaction = session.beginTransaction();
-            result = session.createQuery("FROM carbuyer.models.Advert WHERE owner_id = :id")
-                    .setParameter("id", user.getId())
-                    .list();
+
+            result = session.createQuery(
+                    "select a from Advert a WHERE a.owner.id = :id",
+                    Advert.class
+            ).setParameter("id", user.getId()).list();
+
             transaction.commit();
         } catch (Exception e) {
-            factory.getCurrentSession().getTransaction().rollback();
+            sf.getCurrentSession().getTransaction().rollback();
             LOG.error(e.getMessage(), e);
         }
         return result;
@@ -105,13 +109,14 @@ public class DBStore implements Store {
     @Override
     public List<Advert> showLastDay() {
         List<Advert> result = new ArrayList<>();
-        try (Session session = factory.openSession()) {
+        try (Session session = sf.openSession()) {
             Transaction transaction = session.beginTransaction();
-            result = session.createQuery("FROM carbuyer.models.Advert "
-                    + "WHERE extract(day from created_date) > extract(day from current_date) - 1").list();
+            result = session.createQuery("select a from Advert a "
+                    + "WHERE extract(day from a.createdDate) > extract(day from current_date) - 1",
+                    Advert.class).list();
             transaction.commit();
         } catch (Exception e) {
-            factory.getCurrentSession().getTransaction().rollback();
+            sf.getCurrentSession().getTransaction().rollback();
             LOG.error(e.getMessage(), e);
         }
         return result;
@@ -120,12 +125,15 @@ public class DBStore implements Store {
     @Override
     public List<Advert> showWithPhoto() {
         List<Advert> result = new ArrayList<>();
-        try (Session session = factory.openSession()) {
+        try (Session session = sf.openSession()) {
             Transaction transaction = session.beginTransaction();
-            result = session.createQuery("FROM carbuyer.models.Advert WHERE image_name != ''").list();
+            result = session.createQuery(
+                    "select a from Advert a WHERE a.imageName <> ''",
+                    Advert.class)
+                    .list();
             transaction.commit();
         } catch (Exception e) {
-            factory.getCurrentSession().getTransaction().rollback();
+            sf.getCurrentSession().getTransaction().rollback();
             LOG.error(e.getMessage(), e);
         }
         return result;
@@ -134,18 +142,18 @@ public class DBStore implements Store {
     @Override
     public List<Advert> showWithSpecificMark(Mark mark) {
         List<Advert> result = new ArrayList<>();
-        try (Session session = factory.openSession()) {
+        try (Session session = sf.openSession()) {
             Transaction transaction = session.beginTransaction();
-            Query query = session.createQuery(
+            Query<Advert> query = session.createQuery(
                     "select adv FROM Advert adv "
                             + "join fetch adv.car c "
-                            + "join fetch c.mark m WHERE m.name = :mName"
+                            + "join fetch c.mark m WHERE m.name = :mName", Advert.class
             );
             query.setParameter("mName", mark.getName());
             result = query.list();
             transaction.commit();
         } catch (Exception e) {
-            factory.getCurrentSession().getTransaction().rollback();
+            sf.getCurrentSession().getTransaction().rollback();
             LOG.error(e.getMessage(), e);
         }
         return result;
@@ -153,7 +161,7 @@ public class DBStore implements Store {
 
     @Override
     public void updateStatus(Advert advert) {
-        try (Session session = factory.openSession()) {
+        try (Session session = sf.openSession()) {
             Transaction transaction = session.beginTransaction();
             Query query = session.createQuery("UPDATE carbuyer.models.Advert SET status = :done WHERE id = :id");
             query.setParameter("done", advert.isStatus());
@@ -161,7 +169,7 @@ public class DBStore implements Store {
             query.executeUpdate();
             transaction.commit();
         } catch (Exception e) {
-            factory.getCurrentSession().getTransaction().rollback();
+            sf.getCurrentSession().getTransaction().rollback();
             LOG.error(e.getMessage(), e);
         }
     }
@@ -169,7 +177,7 @@ public class DBStore implements Store {
     @Override
     public void addNewAdvert(CarBody carBody, Engine engine, Transmission transmission,
                              Mark mark, Model model, User user, Car car, Advert advert) {
-        try (Session session = factory.openSession()) {
+        try (Session session = sf.openSession()) {
             Transaction transaction = session.beginTransaction();
             User owner;
             session.save(carBody);
@@ -201,8 +209,13 @@ public class DBStore implements Store {
 
             transaction.commit();
         } catch (Exception e) {
-            factory.getCurrentSession().getTransaction().rollback();
+            sf.getCurrentSession().getTransaction().rollback();
             LOG.error(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        sf.close();
     }
 }

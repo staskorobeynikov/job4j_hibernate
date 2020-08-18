@@ -25,7 +25,7 @@ public class DBStoreTest {
     public void init() {
         factory = ConnectionRollback.create(HibernateFactory.FACTORY);
         session = factory.openSession();
-        store = new DBStore(factory);
+        store = DBStore.getInstance();
 
         CarBody body = new CarBody("sedan", "black", 5);
         Engine engine = new Engine(1.6, 85, "petrol");
