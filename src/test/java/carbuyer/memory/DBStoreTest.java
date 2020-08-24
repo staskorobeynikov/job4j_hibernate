@@ -1,8 +1,6 @@
 package carbuyer.memory;
 
 import carbuyer.models.*;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,18 +13,10 @@ import static org.junit.Assert.*;
 
 public class DBStoreTest {
 
-    private SessionFactory factory;
-
-    private Session session;
-
-    private Store store;
+    private Store store = DBStore.getInstance();
 
     @Before
     public void init() {
-        factory = ConnectionRollback.create(HibernateFactory.FACTORY);
-        session = factory.openSession();
-        store = DBStore.getInstance();
-
         CarBody body = new CarBody("sedan", "black", 5);
         Engine engine = new Engine(1.6, 85, "petrol");
         Transmission transmission = new Transmission("automatic", "rear");
@@ -46,43 +36,27 @@ public class DBStoreTest {
         User addUser = store.addUser(user, account);
         store.addNewAdvert(body, engine, transmission, mark, model, addUser, car, advert);
 
-        CarBody carBody = new CarBody();
-        carBody.setType("hatchback");
-        carBody.setColor("yellow");
-        carBody.setCountDoor(5);
+        CarBody carBody = new CarBody("hatchback", "yellow", 5);
+        Engine eSecond = new Engine(1.5, 80, "diesel");
+        Transmission tSecond = new Transmission("mechanic", "front");
+        Mark mSecond = new Mark("Renault");
+        Model modSecond = new Model("Sandero II");
+        Car cSecond = new Car(10000, new Timestamp(1551398400000L));
 
-        Engine eSecond = new Engine();
-        eSecond.setVolume(1.5);
-        eSecond.setPower(80);
-        eSecond.setType("diesel");
 
-        Transmission tSecond = new Transmission();
-        tSecond.setGearBox("mechanic");
-        tSecond.setGearType("front");
-
-        Mark mSecond = new Mark();
-        mSecond.setName("Renault");
-
-        Model modSecond = new Model();
-        modSecond.setName("Sandero II");
-
-        Car cSecond = new Car();
-        cSecond.setCreated(new Timestamp(1551398400000L));
-        cSecond.setMileAge(10000);
-
-        Advert aSecond = new Advert();
-        aSecond.setImageName("");
-        aSecond.setStatus(false);
-        aSecond.setPrice(3250000);
-        aSecond.setCreatedDate(new Timestamp(System.currentTimeMillis() - 500000));
+        Advert aSecond = new Advert(
+                3250000,
+                false,
+                new Timestamp(System.currentTimeMillis() - 500000),
+                ""
+        );
 
         store.addNewAdvert(carBody, eSecond, tSecond, mSecond, modSecond, addUser, cSecond, aSecond);
     }
 
     @After
     public void destroy() {
-        session.clear();
-        factory.close();
+        store.deleteAll();
     }
 
     @Test

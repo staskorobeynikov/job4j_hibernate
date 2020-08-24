@@ -26,4 +26,6 @@ public interface Store {
 
     void addNewAdvert(CarBody carBody, Engine engine, Transmission transmission,
                       Mark mark, Model model, User user, Car car, Advert advert);
+
+    void deleteAll();
 }

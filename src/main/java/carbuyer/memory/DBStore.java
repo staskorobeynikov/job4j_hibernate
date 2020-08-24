@@ -215,6 +215,20 @@ public class DBStore implements Store, AutoCloseable {
     }
 
     @Override
+    public void deleteAll() {
+        try (Session session = sf.openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            session.createQuery("delete from Advert").executeUpdate();
+
+            transaction.commit();
+        } catch (Exception e) {
+            sf.getCurrentSession().getTransaction().rollback();
+            LOG.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
     public void close() throws Exception {
         sf.close();
     }
